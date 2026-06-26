@@ -1,0 +1,239 @@
+---
+title: "Celestial Blueprint — File Format Specification"
+tags: [format, spec, blueprint, round-trip]
+status: done
+date_created: 2026-06-23
+---
+
+# Celestial Blueprint File Format
+
+Blueprints are **portable markdown files** with YAML frontmatter + a sectioned body. They round-trip between disk (markdown), the backend (JSON API), and the DB (SQLite) without information loss. **Markdown is canonical** — the SQLite DB is a rebuildable query index. If the DB is lost, `POST /blueprints/import` rebuilds it from the markdown.
+
+---
+
+## Round-Trip Contract
+
+```
+markdown file  ←→  backend JSON API  ←→  SQLite DB
+     ↑
+  git-tracked, Obsidian-readable, agent-readable
+```
+
+Mutating API endpoints always rewrite the markdown file. `GET /blueprints/{id}/export` regenerates it. `POST /blueprints/import` parses it back into the DB.
+
+---
+
+## Frontmatter Schema
+
+Every blueprint file starts with YAML frontmatter:
+
+```yaml
+---
+# --- Celestial Blueprint --- (machine fields)
+id: bp_2026-06-23_my-project         # stable slug-id — also DB primary key
+name: "My Project"                    # human display name
+version: 0.1.0                        # semver — bumped on each [CHRONICLE CYCLE]
+tier: small                           # small | medium | large | continuous
+status: active                        # draft | active | blocked | shipped | archived
+realm: 00_CORTEX/01_CREATION_REALM/Celestial_Blueprint/smart-folder.md  # path string
+
+# --- workspace convention fields (required) ---
+title: "My Project"                   # same as name (Obsidian/frontmatter standard)
+tags: [planning, blueprint]
+pipeline_stage: ideation              # ideation | extraction
+date_created: 2026-06-23
+modified: 2026-06-23
+
+# --- optional metadata ---
+model: haiku                          # tier-default model used
+iterations: 3                         # iteration count so far
+---
+```
+
+**Tier defaults:**
+- `small` → model: haiku, iterations: 3+
+- `medium` → model: sonnet, iterations: 2+
+- `large` → model: opus, iterations: 1
+- `continuous` → model: adaptive, iterations: ongoing
+
+---
+
+## Node Types (13)
+
+Each node is a heading + an HTML-comment anchor carrying machine fields, plus a prose body.
+
+| type | color | machine fields |
+|------|-------|---------------|
+| `text` | — | (none beyond base) |
+| `metric` | blue | `value`, `unit`, `target`, `trend` (up/down/flat) |
+| `chart` | — | `chart_type` (line/bar/area), `labels`, `data_json` |
+| `list` | — | `ordered` (true/false) |
+| `quote` | yellow | `author`, `source_url`, `confidence` (0–100) |
+| `research` | yellow | `query`, `sources_json`, `confidence` (0–100) |
+| `assumption` | red | `status` (unvalidated/validating/validated/invalidated), `risk` (low/med/high), `falsifier` |
+| `decision` | — | `status` (accepted/rejected/deferred), `supersedes` |
+| `chronicle` | — | `kind` (raw/cycle), `trigger`, `cycle` |
+| `agent` | — | `agent_name`, `confidence` (0–100) |
+| `cost` | — | `credits`, `model`, `optimization` |
+| `realm` | — | `realm_path`, `soul_ref` |
+| `tool` | — | `tool_name`, `maturity` (beta/stable/proven), `integration_cost` (low/med/high) |
+
+**Base fields** (every node anchor): `id`, `cat` (category id), `type`
+
+---
+
+## Section Layout
+
+```markdown
+# [Blueprint Name]
+
+<!-- bp:summary -->
+One-paragraph summary of what this blueprint is for.
+
+## Categories
+- <!-- cat:c1 --> Validation
+- <!-- cat:c2 --> Technical
+- <!-- cat:c3 --> Market
+
+## Nodes
+
+### [Node Title]
+<!-- node:text id=n1 cat=c2 -->
+Free prose content for this node.
+
+### Target Latency
+<!-- node:metric id=n2 cat=c2 value=200 unit=ms target=150 trend=down -->
+Why this metric matters and what it measures.
+
+### Cold-Start is Tolerable
+<!-- node:assumption id=n3 cat=c1 status=unvalidated risk=high falsifier="p95 > 2s in staging" -->
+Rationale for why we believe this. What would prove it wrong.
+
+### Use SQLite over Postgres
+<!-- node:decision id=d_sqlite cat=c2 status=accepted supersedes=- -->
+**Rationale:** Solo dev, no server needed, phone-as-VPS constraint.
+**Alternatives rejected:** Postgres (ops cost), DuckDB (no full SQL support needed).
+
+### Web Search — cold-start patterns
+<!-- node:research id=rs1 cat=c1 query="sqlite wal mode performance solo" confidence=85 sources_json='[{"url":"...","domain":"sqlite.org"}]' -->
+WAL mode gives ~4x write concurrency improvement. Confirmed default for this project.
+
+## Assumptions
+- <!-- assumption:a1 bp_ref=n3 status=unvalidated risk=high -->
+  Cold-start latency is acceptable to users. Falsifier: p95 > 2s in production test.
+
+## Decisions
+- <!-- decision:d1 bp_ref=d_sqlite status=accepted date=2026-06-23 -->
+  Use SQLite over Postgres — solo dev, no server. Alternatives: Postgres (rejected: ops cost).
+
+## Risks
+
+| id | risk | likelihood | impact | mitigation | status |
+|----|------|-----------|--------|-----------|--------|
+| r1 | DB lock under concurrent cron | med | high | WAL mode + retry wrapper | open |
+<!-- risk-table -->
+
+## Research Log
+- <!-- research:rs1 query="sqlite wal performance" date=2026-06-23 -->
+  WAL gives 4x write concurrency. Confirmed sufficient for solo dev.
+
+## Chronicle Links
+- <!-- chronicle:ch1 type=raw -->  chronicles/raw/2026-06-23-1-assumption-challenged.md
+- <!-- chronicle:ch2 type=cycle --> chronicles/cycles/1/session-001.md
+
+## Edges
+<!-- edges -->
+- n2 -> n3 (informs)
+- n3 -> d_sqlite (drives)
+- rs1 -> d_sqlite (evidence)
+
+## Version Log
+<!-- versions -->
+- 0.1.0 — 2026-06-23 — initial Small-tier blueprint
+```
+
+---
+
+## HTML-Comment Anchor Rules
+
+- The comment anchor is the **machine-truth** (parsed into SQLite columns).
+- Prose after the anchor is **human-truth** (stored as `body` TEXT blob in the DB).
+- Unknown keys in a comment are preserved verbatim in the `data` JSON column (forward-compatible).
+- Prose can be freely edited by humans without breaking parse, as long as comment anchors are not modified.
+- Comment anchors are invisible in rendered Obsidian/markdown views.
+
+---
+
+## Storage Locations
+
+```
+blueprints/
+  bp_2026-06-23_my-project.md          ← single-file (Small/Medium tier)
+  bp_2026-06-23_large-project/
+    blueprint.md                         ← folder (Large/Continuous tier)
+    appendix-research.md
+    appendix-financials.md
+
+chronicles/
+  raw/
+    2026-06-23-1-assumption-challenged.md
+    2026-06-23-2-decision-made.md
+  cycles/
+    1/
+      session-001.md
+```
+
+---
+
+## Blueprint ID Convention
+
+`bp_{YYYY-MM-DD}_{slug}` where slug is kebab-case from the blueprint name.
+
+Examples:
+- `bp_2026-06-23_temporal-snowflake`
+- `bp_2026-06-24_celestial-blueprint-phase-2`
+
+---
+
+## Tier Output Shape
+
+### Small
+```
+5–10 bullet-point nodes
+3 assumption nodes
+2–3 open question nodes
+1 recommendation/decision node
+No charts or financials
+```
+
+### Medium
+```
+5 categories (Validation, Technical, Market, Business, Scaling)
+5–8 nodes per category
+Research-backed nodes (research type with sources)
+Assumption register (3+ assumptions with risk ratings)
+Risk table
+1 decision log entry
+```
+
+### Large
+```
+All Medium content plus:
+40+ nodes total
+Metric nodes with charts
+Financial projections (metric/chart nodes)
+Full risk matrix
+Technical architecture diagram (text node with ASCII or description)
+Agent-performance notes
+PDF-export-ready structure
+```
+
+### Continuous
+```
+Living version of any tier
+Auto-appends new nodes at decision/assumption/risk events
+Decision log grows over time
+Assumption statuses evolve
+Risk matrix updates weekly
+Version log tracks all changes
+```

@@ -1,0 +1,77 @@
+# Smart Folder: Celestial Blueprint
+
+## Purpose
+The active build directory for Celestial Blueprint — a tiered, interrogation-driven planning system with a web canvas frontend, API-first backend, and agent-usable skill layer. All creation for this product starts and lives here until shipped.
+
+## Role
+- **Name**: Architect
+- **Description**: Active product build — contains backend service, React canvas, methodology skill, blueprint artifacts, and chronicles.
+- **Level**: 2
+- **Depth**: deep
+
+## Scope
+**CAN do**:
+- Create, edit, and delete files within this directory
+- Run backend (FastAPI) and frontend (Vite/React) dev servers
+- Scaffold new endpoints, components, and services
+- Write and update blueprint markdown files and chronicles
+
+**CANNOT do**:
+- Move or delete blueprint/chronicle markdown without archiving first
+- Commit credentials or API keys to source files
+- Scatter build artifacts outside this directory (use symlinks for skill integration)
+
+## Boundaries
+- **CAN see**: `*.py, *.ts, *.tsx, *.md, *.json, *.sql, *.env.example, *.toml`
+- **CANNOT see**: `.env, __pycache__/, node_modules/, *.db, *.pyc, dist/`
+- **Token budget**: 12000
+- **File limit**: 800
+
+## Instructions
+1. Backend lives in `backend/` — FastAPI, SQLite, pure Python stdlib + minimal deps.
+2. Frontend lives in `frontend/` — Vite + React 18 + TypeScript + React Flow + Tailwind.
+3. Methodology skill lives in `skill/celestial-blueprint/SKILL.md` — symlinked out to agent dirs.
+4. Active blueprints live in `blueprints/` as markdown files. Chronicles in `chronicles/`.
+5. Format spec is `docs/FORMAT.md` — the round-trip contract between markdown ⇄ JSON ⇄ SQLite.
+6. All backend endpoints must be documented in `docs/API.md`.
+7. Per-phase prompt-packs live in `docs/prompt-packs/<phase>/`.
+8. When a blueprint is shipped/archived: move to `02_OMNI/` and flip DB status — never delete.
+
+## Context
+- **Parent folder**: `00_CORTEX/01_CREATION_REALM/smart-folder.md` (Creation Realm)
+- **Child folders**:
+  - `backend/` — FastAPI service + SQLite schema + migrations
+  - `frontend/` — React + React Flow canvas
+  - `skill/` — SKILL.md + format reference (symlinked to agent dirs)
+  - `docs/` — FORMAT.md, API.md, templates, prompt-packs
+  - `blueprints/` — active blueprint markdown files
+  - `chronicles/` — raw breakpoint captures + cycle syntheses
+- **Related folders**:
+  - `02_OMNI/AI/Projects/Universal_Ancient_Realm/01_Strategic_Planner/Products/Celestial_Blueprint/` — Helix/Kimi planning artifacts (source of methodology)
+  - `03_TOOLBOX/tools/brain-regions/` — brain-orchestrator pattern to mirror
+  - `~/.mcp-lazy/servers.json` — MCP registration (Stage 4)
+
+## Connections
+- **Feeds into**: `02_OMNI/` (archived/shipped blueprints)
+- **Receives from**: `02_OMNI/.../Celestial_Blueprint/` (methodology spec from Helix/Kimi cycles)
+- **Siblings**: `smart-folders/` (framework used for this smart-folder.md)
+
+## Agents
+- **Allowed**: claude, gemini, codex, opencode, hermes
+- **Preferred**: claude (architecture, skill writing), codex/opencode (frontend build)
+- **Restricted**: none
+
+## Laws
+- [ ] **Never**: commit `.env` or any credential file; delete blueprint/chronicle markdown (archive instead)
+- [ ] **Always**: backend endpoints return JSON conforming to the schema in `docs/FORMAT.md`; every new feature has a corresponding prompt-pack entry in `docs/prompt-packs/`
+- [ ] **If**: building a new API endpoint → document it in `docs/API.md` before or alongside the implementation
+
+## Metadata
+- **Created**: 2026-06-23
+- **Author**: ArchangelVoidOrigin
+- **Version**: 1
+- **Quality score**: 9
+- **Last modified**: 2026-06-23
+
+---
+*Smart Folder v0.1.0 — github.com/ArchangelVoidOrigin/smart-folders*

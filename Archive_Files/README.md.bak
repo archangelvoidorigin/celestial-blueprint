@@ -1,0 +1,57 @@
+---
+title: "Celestial Blueprint — Planning System"
+tags: [planning, blueprint, celestial, api-first, web-app]
+status: "In Progress"
+pipeline_stage: ideation
+date_created: 2026-06-23
+---
+
+# Celestial Blueprint
+
+A tiered, interrogation-driven planning system for CHAOS_DAO_FORGE. Dōng Quān-guided. API-first. Usable by any agent, tool, or automation.
+
+## Architecture
+
+```
+backend/        FastAPI service — the shared engine all clients call
+frontend/       React + React Flow canvas — the first client
+skill/          SKILL.md — methodology for any agent (day-1 usable, no backend needed)
+docs/           FORMAT.md, API.md, tier templates, prompt-packs
+blueprints/     Active blueprint markdown files (portable, git-tracked)
+chronicles/     CHRONICLE RAW + CYCLE captures
+```
+
+## API-First Principle
+
+All planning logic lives in the backend behind a documented REST API. The React canvas, CLI (Stage 3), and MCP server (Stage 4) are all thin clients of the same API. Nothing is throwaway.
+
+## 6-Stage Roadmap
+
+| Stage | Name | What |
+|-------|------|------|
+| 1 | The Forge | Web app — backend API + React canvas |
+| 2 | The Summoning | System agent discovery + model routing |
+| 3 | The Hands | CLI + automation tools |
+| 4 | The Nerves | MCP layer (any-agent integration) |
+| 5 | The Brain | Persistent intelligence + project connection |
+| 6 | The Ascension | OS integration |
+
+## Quick Start (Phase 1)
+
+```bash
+# Backend
+cd backend && python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+
+# Frontend
+cd frontend && npm install && npm run dev
+```
+
+## Methodology Skill (day-1, no backend needed)
+
+The `skill/celestial-blueprint/SKILL.md` encodes the full planning methodology — 4 tiers, Dōng Quān 6-step interrogation, chronicle protocol. Usable in Claude Code, OpenCode, or any agent that loads skills, with or without the backend running.
+
+## Blueprint Format
+
+See `docs/FORMAT.md`. Blueprints are portable markdown files (YAML frontmatter + sectioned body) that round-trip to JSON and SQLite. Git-tracked. Obsidian-readable.
