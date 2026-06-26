@@ -19,7 +19,7 @@ An MCP server that exposes Celestial Blueprint as a tool surface so any MCP-capa
 P4.1 MCP Scaffold (mcp/ dir + requirements)
   └─► P4.2 MCP Server (server.py — full stdio tool surface)
         └─► P4.3 Register (add to mcp-lazy-servers.json)
-              └─► P4.4 Skill MCP Wiring (update SKILL.md tool names)
+              └─► P4.4 Skill MCP Wiring (update SKILL.md tool names; install skill into Hermes)
                     └─► P4.5 Verification (VERIFY.md + E2E checklist)
 ```
 
@@ -32,9 +32,9 @@ P4.1 MCP Scaffold (mcp/ dir + requirements)
 | P4.1 | MCP Scaffold | 1 (T4.1.01) |
 | P4.2 | MCP Server | 1 (T4.2.01) |
 | P4.3 | Register | 1 (T4.3.01) |
-| P4.4 | Skill MCP Wiring | 1 (T4.4.01) |
+| P4.4 | Skill MCP Wiring | 2 (T4.4.01–02) |
 | P4.5 | Verification | 1 (T4.5.01) |
-| **Total** | | **5 tasks** |
+| **Total** | | **6 tasks** |
 
 ---
 
@@ -46,7 +46,8 @@ P4.1 MCP Scaffold (mcp/ dir + requirements)
 | T4.2.01 | `mcp/server.py` — stdio MCP server (all 14 tools) | T4.1.01 |
 | T4.3.01 | Register `celestial-blueprint` in `mcp-lazy-servers.json` | T4.2.01 |
 | T4.4.01 | Update `SKILL.md` MCP-mode section with real tool names | T4.3.01 |
-| T4.5.01 | `BUILD_PLAN/STAGE_4_NERVES/VERIFY.md` — E2E verification checklist | T4.4.01 |
+| T4.4.02 | Install celestial-blueprint skill into Hermes | T4.4.01, T2.1.06 |
+| T4.5.01 | `BUILD_PLAN/STAGE_4_NERVES/VERIFY.md` — E2E verification checklist | T4.4.01, T4.4.02 |
 
 ---
 

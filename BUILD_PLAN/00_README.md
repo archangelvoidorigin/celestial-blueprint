@@ -35,7 +35,7 @@ You will be handed `00_GLOBAL_CONTEXT.md` and exactly one task file. Do this:
 00_PROMPT_TEMPLATE.md   ← the shape every task file follows
 
 STAGE_1_FORGE/          ← the web app — fully atomized (51 tasks, 8 phases)
-STAGE_2..6/             ← phase outlines, atomized when reached
+STAGE_2..6/             ← fully atomized (all phases + task files written)
 ```
 
 ## Stage order

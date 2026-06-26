@@ -41,8 +41,8 @@ Execute in this order. Check a box only when the task's Verify Command passes. N
 ### Phase 1.4 — Core API
 - [ ] T1.4.01 — `app/main.py` FastAPI app + CORS + lifespan · deps: T1.3.02
 - [ ] T1.4.02 — `app/api/blueprints.py` · deps: T1.4.01, T1.3.04
-- [ ] T1.4.03 — `app/api/nodes.py` (nodes + edges) · deps: T1.4.01, T1.3.05
-- [ ] T1.4.04 — `app/api/tracking.py` (assumptions/decisions/risks) · deps: T1.4.01, T1.3.05
+- [ ] T1.4.03 — `app/api/nodes.py` (nodes + edges) · deps: T1.4.01, T1.4.02, T1.3.05
+- [ ] T1.4.04 — `app/api/tracking.py` (assumptions/decisions/risks) · deps: T1.4.01, T1.4.02, T1.3.05
 - [ ] T1.4.05 — `app/api/chronicles.py` · deps: T1.4.01, T1.3.05
 - [ ] T1.4.06 — `app/api/io.py` import/export · deps: T1.4.02, T1.2.06
 - [ ] T1.4.07 — `docs/API.md` · deps: T1.4.02, T1.4.03, T1.4.04, T1.4.05, T1.4.06
@@ -143,9 +143,10 @@ Execute in this order. Check a box only when the task's Verify Command passes. N
 
 ### Phase 4.4 — Skill MCP Wiring
 - [ ] T4.4.01 — Update `SKILL.md` MCP-mode section with real tool names · deps: T4.3.01
+- [ ] T4.4.02 — Install celestial-blueprint skill into Hermes · deps: T4.4.01, T2.1.06
 
 ### Phase 4.5 — Verification
-- [ ] T4.5.01 — `BUILD_PLAN/STAGE_4_NERVES/VERIFY.md` E2E checklist · deps: T4.4.01
+- [ ] T4.5.01 — `BUILD_PLAN/STAGE_4_NERVES/VERIFY.md` E2E checklist · deps: T4.4.01, T4.4.02
 
 ## STAGE 5 — THE BRAIN
 
@@ -196,4 +197,4 @@ Execute in this order. Check a box only when the task's Verify Command passes. N
 
 ---
 
-**Stage 1 total: 51 tasks** (T1.2.01 pre-done). **Stage 2 total: 21 tasks.** **Stage 3 total: 9 tasks.** **Stage 4 total: 5 tasks.** **Stage 5 total: 12 tasks.** **Stage 6 total: 11 tasks** (T6.4.01–02 optional). **Grand total: 109 tasks.**
+**Stage 1 total: 51 tasks** (T1.2.01 pre-done). **Stage 2 total: 21 tasks.** **Stage 3 total: 9 tasks.** **Stage 4 total: 6 tasks.** **Stage 5 total: 12 tasks.** **Stage 6 total: 11 tasks** (T6.4.01–02 optional). **Grand total: 110 tasks.**
